@@ -70,7 +70,7 @@ module Faye
         @server.debug 'Created new client ?', client_id
         ping(client_id)
         @server.trigger(:handshake, client_id)
-        callback.call(client_id)
+        return callback.call(client_id)
       end
     end
 
