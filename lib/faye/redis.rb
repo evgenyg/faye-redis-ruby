@@ -66,6 +66,7 @@ module Faye
       init
       client_id = @server.generate_id
       @redis.zadd(@ns + '/clients', 0, client_id) do |added, a, b|
+        binding.pry
         next create_client(&callback) if added == 0
         @server.debug 'Created new client ?', client_id
         ping(client_id)
