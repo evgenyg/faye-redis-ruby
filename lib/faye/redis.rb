@@ -65,16 +65,13 @@ module Faye
     def create_client(&callback)
       init
       client_id = @server.generate_id
-      binding.pry
-      @redis.zadd(@ns + '/clients', 0, client_id) do |added|
-      binding.pry
+      @redis.zadd(@ns + '/clients', 0, client_id) do |added, a, b|
         next create_client(&callback) if added == 0
+        @server.debug 'Created new client ?', client_id
+        ping(client_id)
+        @server.trigger(:handshake, client_id)
+        callback.call(client_id)
       end
-      binding.pry
-      @server.debug 'Created new client ?', client_id
-      ping(client_id)
-      @server.trigger(:handshake, client_id)
-      callback.call(client_id)
     end
 
     def client_exists(client_id, &callback)
